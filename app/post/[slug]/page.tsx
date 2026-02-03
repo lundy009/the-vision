@@ -4,13 +4,20 @@ import StickyTTSPlayer from "@/components/StickyTTSPlayer";
 
 export const revalidate = 30;
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function PostPage({ params }: Props) {
+  const { slug } = await params;
+
   const { data: a } = await supabase
     .from("articles")
     .select("*")
     .eq("status", "published")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
+
 
   if (!a) return <div className="max-w-5xl mx-auto px-4 py-10">Not found</div>;
 
