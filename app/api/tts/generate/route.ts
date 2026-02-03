@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       model: "gpt-4o-mini-tts",
       voice: chosenVoice,
       input: chunks[i],
-      format: "mp3",
+      response_format: "mp3",
     });
 
     const buffer = Buffer.from(await speech.arrayBuffer());
