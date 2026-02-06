@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -43,12 +44,25 @@ export async function POST(req: NextRequest) {
         media: { mimeType: file.type, body: buffer as any },
       });
 
+const stream = Readable.from(buffer);
+
+const res = await drive.files.create({
+  requestBody: {
+    name: safeName,
+    parents: [process.env.GDRIVE_FOLDER_ID!],
+  },
+  media: {
+    mimeType: file.type || "application/octet-stream",
+    body: stream,
+  },
+  fields: "id, name",
+});
       await drive.permissions.create({
         fileId: res.data.id!,
         requestBody: { role: "reader", type: "anyone" },
       });
 
-      driveUrl = `https://drive.google.com/uc?id=${res.data.id}`;
+      driveUrl = `https://drive.google.com/file/d/${res.data.id}/view`;
     }
 
     return NextResponse.json({ supabaseUrl, driveUrl });
