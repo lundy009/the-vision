@@ -64,7 +64,7 @@ const res = await drive.files.create({
 
       driveUrl = `https://drive.google.com/file/d/${res.data.id}/view`;
     }
-
+console.log("Drive uploaded fileId:", res.data.id);
     return NextResponse.json({ supabaseUrl, driveUrl });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message ?? "Server error" }, { status: 500 });
